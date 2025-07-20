@@ -48,24 +48,6 @@ public class Vector3{
      * Adds a vector or scalar to this vector 
      * Складывает вектор или скаляр с текущим вектором 
      */
-    /**
-     * set x
-     */
-    public void setX(double x){
-        this.x = x;
-    }
-    /**
-     * set y
-     */
-    public void setY(double y){
-        this.y = y;
-    }
-    /**
-     * set z
-     */
-    public void setZ(double z){
-        this.z = z;
-    }
     public void add(Vector3 other){
         this.x += other.x;
         this.y += other.y;
