@@ -1,91 +1,163 @@
 package coordinateSystem;
 
 /**
- * Represents a 4×4 matrix for 3D transformations.
- * Представляет матрицу 4×4 для преобразований в 3D.
+ * Represents a 4x4 matrix used for 3D transformations.
+ * Представляет матрицу 4x4, используемую для 3D-преобразований.
  */
 public class Matrix4 {
-    
-    private double[][] values;
 
-    /**
-     * Creates an identity matrix (1 on the diagonal, 0 elsewhere).
-     * Создаёт единичную матрицу (1 на диагонали, 0 в остальных ячейках).
+    private final double[][] matrix;
+
+    /** 
+     * Creates a new identity matrix.
+     * Создаёт новую единичную матрицу.
      */
     public Matrix4() {
-        values = new double[4][4];
+        matrix = new double[4][4];
         for (int i = 0; i < 4; i++) {
-            values[i][i] = 1.0;
+            matrix[i][i] = 1.0;
         }
     }
 
-    /**
-     * Creates a matrix from a 4×4 array. Throws if array is not 4×4.
-     * Создаёт матрицу из массива 4×4. Выбрасывает исключение, если размер не 4×4.
+    /** 
+     * Creates a matrix with given values.
+     * Создаёт матрицу с заданными значениями.
      */
-    private Matrix4(double[][] values) {
+    public Matrix4(double[][] values) {
         if (values.length != 4 || values[0].length != 4) {
-            throw new IllegalArgumentException("Matrix must be 4×4");
+            throw new IllegalArgumentException("Matrix must be 4x4");
         }
-        this.values = new double[4][4];
+        matrix = new double[4][4];
         for (int i = 0; i < 4; i++) {
-            System.arraycopy(values[i], 0, this.values[i], 0, 4);
+            System.arraycopy(values[i], 0, matrix[i], 0, 4);
         }
     }
 
     /**
-     * Returns a new identity matrix.
-     * Возвращает новую единичную матрицу.
+     * Returns element at (row, col).
+     * Возвращает элемент по координатам (row, col).
      */
-    public static Matrix4 identity() {
-        return new Matrix4();
+    public double get(int row, int col) {
+        validateIndices(row, col);
+        return matrix[row][col];
     }
 
     /**
-     * Multiplies this matrix by another (this * other) and returns the result.
-     * Умножает эту матрицу на другую (this * other) и возвращает результат.
+     * Sets element at (row, col) to value.
+     * Устанавливает значение элемента (row, col).
+     */
+    public void set(int row, int col, double value) {
+        validateIndices(row, col);
+        matrix[row][col] = value;
+    }
+
+    /**
+     * Multiplies this matrix by another matrix.
+     * Умножает текущую матрицу на другую матрицу.
      */
     public Matrix4 multiply(Matrix4 other) {
         double[][] result = new double[4][4];
+        double[][] a = this.matrix;
+        double[][] b = other.matrix;
+
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
                 double sum = 0.0;
                 for (int k = 0; k < 4; k++) {
-                    sum += this.values[row][k] * other.values[k][col];
+                    sum += a[row][k] * b[k][col];
                 }
                 result[row][col] = sum;
             }
         }
+
         return new Matrix4(result);
     }
 
     /**
-     * Transforms the given point (Vector3) by this matrix (assumes w=1).
-     * Преобразует точку (Vector3) этой матрицей (предполагается w=1).
+     * Applies transformation to a vector.
+     * Применяет матрицу к вектору.
      */
     public Vector3 transform(Vector3 v) {
-        double x = v.getX();
-        double y = v.getY();
-        double z = v.getZ();
-        double tx = values[0][0] * x + values[0][1] * y + values[0][2] * z + values[0][3];
-        double ty = values[1][0] * x + values[1][1] * y + values[1][2] * z + values[1][3];
-        double tz = values[2][0] * x + values[2][1] * y + values[2][2] * z + values[2][3];
-        return new Vector3(tx, ty, tz);
+        double[] result = applyHomogeneous(v);
+        if (result[3] == 0.0) {
+            throw new ArithmeticException("Invalid homogeneous coordinate (w = 0)");
+        }
+
+        return new Vector3(result[0] / result[3], result[1] / result[3], result[2] / result[3]);
     }
 
     /**
-     * Returns a string representation for debugging.
-     * Возвращает строковое представление для отладки.
+     * Returns a string representation of the matrix.
+     * Возвращает строковое представление матрицы.
      */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int row = 0; row < 4; row++) {
-            sb.append("[ ");
-            for (int col = 0; col < 4; col++) {
-                sb.append(String.format("%.3f", values[row][col])).append(" ");
+        for (double[] row : matrix) {
+            for (double val : row) {
+                sb.append(String.format("%10.4f ", val));
             }
-            sb.append("]\n");
+            sb.append("\n");
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns a copy of this matrix.
+     * Возвращает копию текущей матрицы.
+     */
+    public Matrix4 copy() {
+        return new Matrix4(this.matrix);
+    }
+
+    /**
+     * Checks equality with another matrix.
+     * Проверяет равенство с другой матрицей.
+     */
+    public boolean equals(Matrix4 other) {
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (Double.compare(matrix[row][col], other.matrix[row][col]) != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Validates row and column indices.
+     * Проверяет корректность индексов.
+     */
+    private void validateIndices(int row, int col) {
+        if (row < 0 || row > 3 || col < 0 || col > 3) {
+            throw new IndexOutOfBoundsException("Matrix indices must be in range [0..3]");
+        }
+    }
+
+    /**
+     * Applies matrix to a vector using homogeneous coordinates.
+     * Применяет матрицу к вектору в однородных координатах.
+     */
+    private double[] applyHomogeneous(Vector3 v) {
+        double[] result = new double[4];
+        double[] input = { v.getX(), v.getY(), v.getZ(), 1.0 };
+
+        for (int row = 0; row < 4; row++) {
+            result[row] = 0;
+            for (int col = 0; col < 4; col++) {
+                result[row] += matrix[row][col] * input[col];
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns identity matrix constant.
+     * Возвращает единичную матрицу.
+     */
+    public static Matrix4 identity() {
+        return new Matrix4();
     }
 }
