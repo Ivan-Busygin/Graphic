@@ -1,10 +1,10 @@
-package src.Space;
+package coordinateSystem;
 
 /**
  * 3D вектор с базовыми операциями над ним.
  * 3D vector with basic vector operations.
  */
-public class Vector3{
+public class Vector3 {
 
     private double x;
     private double y;  
@@ -14,7 +14,7 @@ public class Vector3{
      * Main constructor 
      * Основной конструктор 
      */
-    public Vector3(double x, double y, double z){
+    public Vector3(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -24,7 +24,7 @@ public class Vector3{
      * Returns X component 
      * Возвращает компонент X 
      */
-    public double getX(){
+    public double getX() {
         return x;
     }
 
@@ -32,7 +32,7 @@ public class Vector3{
      * Returns Y component 
      * Возвращает компонент Y 
      */
-    public double getY(){
+    public double getY() {
         return y;
     }
 
@@ -40,7 +40,7 @@ public class Vector3{
      * Returns Z component 
      * Возвращает компонент Z 
      */
-    public double getZ(){
+    public double getZ() {
         return z;
     }
 
@@ -48,7 +48,7 @@ public class Vector3{
      * Adds a vector or scalar to this vector 
      * Складывает вектор или скаляр с текущим вектором 
      */
-    public void add(Vector3 other){
+    public void add(Vector3 other) {
         this.x += other.x;
         this.y += other.y;
         this.z += other.z;
@@ -58,7 +58,7 @@ public class Vector3{
      * Adds a vector or scalar to this vector 
      * Складывает вектор или скаляр с текущим вектором 
      */
-    public void add(double scalar){
+    public void add(double scalar) {
         this.x += scalar;
         this.y += scalar;
         this.z += scalar;
@@ -68,7 +68,7 @@ public class Vector3{
      * Returns sum of two vectors 
      * Возвращает сумму двух векторов 
      */
-    public static Vector3 add(Vector3 a, Vector3 b){
+    public static Vector3 add(Vector3 a, Vector3 b) {
         return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 
@@ -76,7 +76,7 @@ public class Vector3{
      * Subtracts a vector or scalar from this vector 
      * Вычитает вектор или скаляр из текущего вектора 
      */
-    public void subtract(Vector3 other){
+    public void subtract(Vector3 other) {
         this.x -= other.x;
         this.y -= other.y;
         this.z -= other.z;
@@ -86,7 +86,7 @@ public class Vector3{
      * Subtracts a vector or scalar from this vector 
      * Вычитает вектор или скаляр из текущего вектора 
      */
-    public void subtract(double scalar){
+    public void subtract(double scalar) {
         this.x -= scalar;
         this.y -= scalar;
         this.z -= scalar;
@@ -96,7 +96,7 @@ public class Vector3{
      * Returns difference of two vectors 
      * Возвращает разность двух векторов 
      */
-    public static Vector3 subtract(Vector3 a, Vector3 b){
+    public static Vector3 subtract(Vector3 a, Vector3 b) {
         return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
     }
 
@@ -104,7 +104,7 @@ public class Vector3{
      * Performs component-wise multiplication 
      * Поэлементное умножение вектора на вектор или скаляр 
      */
-    public void multiply(Vector3 other){
+    public void multiply(Vector3 other) {
         this.x *= other.x;
         this.y *= other.y;
         this.z *= other.z;
@@ -114,7 +114,7 @@ public class Vector3{
      * Performs component-wise multiplication 
      * Поэлементное умножение вектора на вектор или скаляр 
      */
-    public void multiply(double scalar){
+    public void multiply(double scalar) {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
@@ -124,7 +124,7 @@ public class Vector3{
      * Returns component-wise product of two vectors 
      * Возвращает поэлементное произведение двух векторов 
      */
-    public static Vector3 multiply(Vector3 a, Vector3 b){
+    public static Vector3 multiply(Vector3 a, Vector3 b) {
         return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     }
 
@@ -132,7 +132,7 @@ public class Vector3{
      * Performs component-wise division 
      * Поэлементное деление вектора на вектор или скаляр 
      */
-    public void divide(Vector3 other){
+    public void divide(Vector3 other) {
         this.x /= other.x;
         this.y /= other.y;
         this.z /= other.z;
@@ -142,7 +142,7 @@ public class Vector3{
      * Performs component-wise division 
      * Поэлементное деление вектора на вектор или скаляр 
      */
-    public void divide(double scalar){
+    public void divide(double scalar) {
         if (scalar == 0){
             throw new ArithmeticException("Division by zero");
         }
@@ -155,7 +155,7 @@ public class Vector3{
      * Returns component-wise division of two vectors 
      * Возвращает поэлементное деление двух векторов 
      */
-    public static Vector3 divide(Vector3 a, Vector3 b){
+    public static Vector3 divide(Vector3 a, Vector3 b) {
         return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 
@@ -163,7 +163,7 @@ public class Vector3{
      * Calculates distance between two points 
      * Вычисляет расстояние между двумя точками 
      */
-    public static double computeDistance(Vector3 p1, Vector3 p2){
+    public static double computeDistance(Vector3 p1, Vector3 p2) {
         double dx = p1.x - p2.x;
         double dy = p1.y - p2.y;
         double dz = p1.z - p2.z;
@@ -174,7 +174,7 @@ public class Vector3{
      * Returns negated vector 
      * Возвращает отрицательный вектор 
      */
-    public static Vector3 negate(Vector3 v){
+    public static Vector3 negate(Vector3 v) {
         return new Vector3(-v.x, -v.y, -v.z);
     }
 
@@ -182,7 +182,7 @@ public class Vector3{
      * Converts vector to string 
      * Преобразует вектор в строку 
      */
-    public String toString(){
+    public String toString() {
         return "(" + x + ", " + y + ", " + z + ")";
     }
 
@@ -190,7 +190,7 @@ public class Vector3{
      * Returns vector length (magnitude) 
      * Возвращает длину (модуль) вектора 
      */
-    public double getLength(){
+    public double getLength() {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
@@ -198,12 +198,12 @@ public class Vector3{
      * Returns normalized vector (unit vector) 
      * Возвращает нормализованный вектор (единичной длины) 
      */
-    public Vector3 normalize(){
+    public Vector3 normalize() {
         double len = getLength();
-        if (len == 0){
+        if (len == 0) {
             return new Vector3(0, 0, 0);
         }
-        else{
+        else {
             return new Vector3(x / len, y / len, z / len);
         }
     }
@@ -212,7 +212,7 @@ public class Vector3{
      * Computes dot product of two vectors 
      * Вычисляет скалярное произведение двух векторов 
      */
-    public static double computeDotProduct(Vector3 a, Vector3 b){
+    public static double computeDotProduct(Vector3 a, Vector3 b) {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
@@ -220,7 +220,7 @@ public class Vector3{
      * Computes cross product of two vectors 
      * Вычисляет векторное произведение двух векторов 
      */
-    public static Vector3 computeCrossProduct(Vector3 a, Vector3 b){
+    public static Vector3 computeCrossProduct(Vector3 a, Vector3 b) {
         return new Vector3(
             a.y * b.z - a.z * b.y,
             a.z * b.x - a.x * b.z,
