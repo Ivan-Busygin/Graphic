@@ -46,7 +46,7 @@ public class Vector3 {
 
     /** 
      * Adds a vector or scalar to this vector 
-     * Складывает вектор или скаляр с текущим вектором 
+     * Складывает вектор с текущим вектором 
      */
     public void add(Vector3 other) {
         this.x += other.x;
