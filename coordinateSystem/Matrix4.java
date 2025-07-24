@@ -74,6 +74,29 @@ public class Matrix4 {
     }
 
     /**
+     * Multiplies this matrix by another matrix.
+     * Умножает текущую матрицу на вектор.
+     */
+    public Vector3 multiply(Vector3 vector) {
+        double[] result = new double[4];
+        double[] v = {vector.getX(), vector.getY(), vector.getZ(), 1.0};
+
+        for (int row = 0; row < 4; row++) {
+            result[row] = 0;
+            for (int col = 0; col < 4; col++) {
+                result[row] += this.matrix[row][col] * v[col];
+            }
+        }
+
+        double w = result[3];
+        if (w != 0.0) {
+            return new Vector3(result[0] / w, result[1] / w, result[2] / w);
+        } else {
+            return new Vector3(result[0], result[1], result[2]);
+        }
+    }
+
+    /**
      * Applies transformation to a vector.
      * Применяет матрицу к вектору.
      */
@@ -152,6 +175,79 @@ public class Matrix4 {
 
         return result;
     }
+
+    /**
+     * Creates translation matrix for given vector
+     * Создаёт матрицу переноса по заданному вектору
+     */
+    public static Matrix4 createTranslation(Vector3 translation) {
+        Matrix4 result = new Matrix4(); // identity
+    
+        result.set(0, 3, translation.getX());
+        result.set(1, 3, translation.getY());
+        result.set(2, 3, translation.getZ());
+    
+        return result;
+    }
+    
+    /**
+     * Creates scale matrix for given scale vector
+     * Создаёт матрицу масштабирования по заданному вектору
+     */
+    public static Matrix4 createScale(Vector3 scale) {
+        Matrix4 result = new Matrix4(); // identity
+    
+        result.set(0, 0, scale.getX());
+        result.set(1, 1, scale.getY());
+        result.set(2, 2, scale.getZ());
+    
+        return result;
+    }
+    
+    /**
+     * Creates rotation matrix using Euler angles (in radians)
+     * Создаёт матрицу поворота по углам Эйлера (в радианах)
+     */
+    public static Matrix4 createRotation(Vector3 eulerDegrees) {
+        double x = Math.toRadians(eulerDegrees.getX());
+        double y = Math.toRadians(eulerDegrees.getY());
+        double z = Math.toRadians(eulerDegrees.getZ());
+    
+        double cosX = Math.cos(x);
+        double sinX = Math.sin(x);
+        double cosY = Math.cos(y);
+        double sinY = Math.sin(y);
+        double cosZ = Math.cos(z);
+        double sinZ = Math.sin(z);
+    
+        // Rotation around X-axis
+        Matrix4 rotX = new Matrix4(new double[][] {
+            {1,     0,      0,     0},
+            {0,  cosX,  -sinX,     0},
+            {0,  sinX,   cosX,     0},
+            {0,     0,      0,     1}
+        });
+    
+        // Rotation around Y-axis
+        Matrix4 rotY = new Matrix4(new double[][] {
+            { cosY, 0, sinY, 0},
+            {    0, 1,    0, 0},
+            {-sinY, 0, cosY, 0},
+            {    0, 0,    0, 1}
+        });
+    
+        // Rotation around Z-axis
+        Matrix4 rotZ = new Matrix4(new double[][] {
+            {cosZ, -sinZ, 0, 0},
+            {sinZ,  cosZ, 0, 0},
+            {   0,     0, 1, 0},
+            {   0,     0, 0, 1}
+        });
+    
+        // Combined rotation: Z * Y * X
+        return rotZ.multiply(rotY).multiply(rotX);
+    }
+    
 
     /**
      * Returns identity matrix constant.
